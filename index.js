@@ -1,3 +1,5 @@
-/**
- * Created by spartacus on 11/19/15.
- */
+function CustomerConfigPlugin () {}
+
+
+
+module.exports = new CustomerConfigPlugin();
