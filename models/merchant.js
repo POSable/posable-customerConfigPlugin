@@ -4,6 +4,7 @@ var MerchantSchema = new mongoose.Schema({
     companyName: String,
     posapiToken: String,
     activeStatus: Boolean,
+    timezone: String,
     posVendorID: Number
 
 });
