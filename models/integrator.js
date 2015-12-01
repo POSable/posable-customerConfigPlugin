@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 
 var IntegratorSchema = new mongoose.Schema({
     companyName: String,
-    phone: String
-
+    phone: String,
+    responseType: String
 
 });
 

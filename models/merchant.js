@@ -5,7 +5,7 @@ var MerchantSchema = new mongoose.Schema({
     posapiToken: String,
     activeStatus: Boolean,
     timezone: String,
-    posVendorID: Number
+    posVendorID: Number,
 
 });
 
