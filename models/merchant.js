@@ -1,12 +1,14 @@
 var mongoose = require('mongoose');
 
 var MerchantSchema = new mongoose.Schema({
-    companyName: String,
+    name: String,
     posapiToken: String,
     activeStatus: Boolean,
     timezone: String,
     posVendorID: Number,
-    customerID: Number
+    internalID: Number,
+    responseType: String,
+    merchantID: String
 
 });
 
@@ -15,7 +17,7 @@ MerchantSchema.pre('save', function(next) {
     counter.findByIdAndUpdate({_id: 'merchantCounter'}, {$inc: { seq: 1} }, function(error, counter)   {
         if(error)
             return next(error);
-        doc.customerID = counter.seq;
+        doc.internalID = counter.seq;
         next();
     });
 });
