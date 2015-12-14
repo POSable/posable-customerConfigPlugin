@@ -6,6 +6,7 @@ var MerchantSchema = new mongoose.Schema({
     activeStatus: Boolean,
     timezone: String,
     posVendorID: Number,
+    customerID: Number
 
 });
 

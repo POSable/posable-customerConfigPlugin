@@ -1,4 +1,9 @@
-function CustomerConfigPlugin () {}
+function CustomerConfigPlugin () {
+
+    var mongoose = require('mongoose');
+    mongoose.connect('mongodb://localhost/paymentData');
+
+}
 
 
 
