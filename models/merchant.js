@@ -10,6 +10,17 @@ var MerchantSchema = new mongoose.Schema({
 
 });
 
+MerchantSchema.pre('save', function(next) {
+    var doc = this;
+    counter.findByIdAndUpdate({_id: 'merchantCounter'}, {$inc: { seq: 1} }, function(error, counter)   {
+        if(error)
+            return next(error);
+        doc.customerID = counter.seq;
+        next();
+    });
+});
+
 module.exports = {
     model : mongoose.model('Merchant', MerchantSchema)
 };
+
