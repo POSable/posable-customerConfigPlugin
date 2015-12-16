@@ -8,7 +8,8 @@ var MerchantSchema = new mongoose.Schema({
     posVendorID: Number,
     internalID: Number,
     responseType: String,
-    merchantID: String
+    merchantID: String,
+    batchType: String
 
 });
 
