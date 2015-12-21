@@ -9,7 +9,14 @@ var MerchantSchema = new mongoose.Schema({
     internalID: Number,
     responseType: String,
     merchantID: String,
-    batchType: String
+    batchType: String,
+    visaID: String,
+    mastercardID: String,
+    amexID: String,
+    discoverID: String,
+    depositAccountID: String,
+    depositAccountName: String
+
 
 });
 
