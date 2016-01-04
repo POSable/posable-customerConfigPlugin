@@ -3,13 +3,24 @@ var mongoose = require('mongoose');
 
 function ConfigPlugin () {
 
+    //var db = mongoose.connection;
+    //db.on('error', console.error.bind(console, 'connection error:'));
+    //db.once('open', function (callback) {
+    //    console.log('connected');
+    //});
+
+    //mongoose.connect('mongodb://localhost/paymentData');
+
+    //Setup Database Connection
+    var mongoose = require('mongoose');
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function (callback) {
-        console.log('connected');
+        //console.log('connected');
     });
-
-    mongoose.connect('mongodb://localhost/paymentData');
+    var env = require('./common').config();
+    mongoose.connect(env['mongoose_connection']);
+    //console.log(env['mongoose_connection']);
 
     this.merchantLookup = function(internalID, callback){
         Merchant.findOne( {internalID: internalID}, '', callback );
