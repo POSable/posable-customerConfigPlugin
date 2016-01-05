@@ -15,7 +15,8 @@ var MerchantSchema = new mongoose.Schema({
     amexID: String,
     discoverID: String,
     depositAccountID: String,
-    depositAccountName: String
+    depositAccountName: String,
+    cloudElemAPIKey: String
 
 
 });
