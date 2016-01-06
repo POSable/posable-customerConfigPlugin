@@ -1,7 +1,8 @@
 var Merchant = require('./models/merchant').model;
 var mongoose = require('mongoose');
+var configPlugin;
 
-function ConfigPlugin () {
+function ConfigPlugin (env) {
 
     //var db = mongoose.connection;
     //db.on('error', console.error.bind(console, 'connection error:'));
@@ -12,14 +13,14 @@ function ConfigPlugin () {
     //mongoose.connect('mongodb://localhost/paymentData');
 
     //Setup Database Connection
-    var mongoose = require('mongoose');
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function (callback) {
         //console.log('connected');
     });
-    var env = require('./common').config();
-    mongoose.connect(env['mongoose_connection']);
+    //var env = require('./common').config();
+    //mongoose.connect(env['mongoose_connection']);
+    mongoose.connect(env);
     //console.log(env['mongoose_connection']);
 
     this.merchantLookup = function(internalID, callback){
@@ -27,4 +28,9 @@ function ConfigPlugin () {
     };
 }
 
-module.exports = new ConfigPlugin;
+function newConfigPlugin (env) {
+    if (!configPlugin) { configPlugin = new ConfigPlugin(env); }
+    return configPlugin;
+}
+
+module.exports = newConfigPlugin;
