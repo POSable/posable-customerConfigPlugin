@@ -2,7 +2,7 @@ var Merchant = require('./models/merchant').model;
 var mongoose = require('mongoose');
 var configPlugin;
 
-function ConfigPlugin (env) {
+function ConfigPlugin (env, logPlugin) {
 
     //Setup Database Connection
     var db = mongoose.connection;
@@ -16,6 +16,7 @@ function ConfigPlugin (env) {
     //console.log(env['mongoose_connection']);
 
     this.merchantLookup = function(internalID, callback){
+        logPlugin.debug('Merchant Lookup Started');
         Merchant.findOne( {internalID: internalID}, '', callback );
     };
 }
