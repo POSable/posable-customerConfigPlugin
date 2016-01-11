@@ -16,7 +16,9 @@ function ConfigPlugin (env) {
     //console.log(env['mongoose_connection']);
 
     this.merchantLookup = function(internalID, logPlugin, callback){
-        logPlugin.debug('Merchant Lookup Started');
+        if(logPlugin) {
+            logPlugin.debug('Merchant Lookup Started');
+        }
         Merchant.findOne( {internalID: internalID}, '', callback );
     };
 }
