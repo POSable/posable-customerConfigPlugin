@@ -10,10 +10,8 @@ function ConfigPlugin (env) {
     db.once('open', function (callback) {
         //console.log('connected');
     });
-    //var env = require('./common').config();
-    //mongoose.connect(env['mongoose_connection']);
+
     mongoose.connect(env);
-    //console.log(env['mongoose_connection']);
 
     this.merchantLookup = function(internalID, logPlugin, callback){
         if(logPlugin) {
