@@ -19,6 +19,10 @@ function ConfigPlugin (env) {
         }
         Merchant.findOne( {internalID: internalID}, '', callback );
     };
+
+    this.merchantBatchLookup = function(callback) {
+        Merchant.find({batchType: "batch"}, {internalID: 1}, {}, callback);
+    }
 }
 
 function newConfigPlugin (env) {
