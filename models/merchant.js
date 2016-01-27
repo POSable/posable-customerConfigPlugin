@@ -16,6 +16,7 @@ var MerchantSchema = new mongoose.Schema({
     discoverID: String,
     depositAccountID: String,
     depositAccountName: String,
+    batchTime: String,
     cloudElemAPIKey: String
 
 
