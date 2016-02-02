@@ -26,31 +26,31 @@ function ConfigPlugin (env) {
         Merchant.find({batchType: "batch"}, {internalID: 1}, {}, callback);
     };
 
-    function checkTime() {
-
-        var d = new Date();
-        var hours = d.getHours();
-        var mins = d.getMinutes();
-        var time = "" + hours + mins;
-
-        logPlugin.debug(time);
-
-        if (time >= 1 && time <= 2359) {
-            logPlugin.debug("in the range");
-            lookup().merchantBatchLookup(function (err, docs) {
-                batchMerchantsArray = docs;
-                typeSum(batchMerchantsArray);
-
-    var d = new Date();
-    var hours = d.getHours();
-    var mins = d.getMinutes();
-    var time = "" + hours + mins;
-
-    logPlugin.debug(time);
-
-    Merchant.find({batchType: "batch"}).
-        where('batchTime').lt(time).
-        exec(callback);
+//    function checkTime() {
+//
+//        var d = new Date();
+//        var hours = d.getHours();
+//        var mins = d.getMinutes();
+//        var time = "" + hours + mins;
+//
+//        logPlugin.debug(time);
+//
+//        if (time >= 1 && time <= 2359) {
+//            logPlugin.debug("in the range");
+//            lookup().merchantBatchLookup(function (err, docs) {
+//                batchMerchantsArray = docs;
+//                typeSum(batchMerchantsArray);
+//
+//    var d = new Date();
+//    var hours = d.getHours();
+//    var mins = d.getMinutes();
+//    var time = "" + hours + mins;
+//
+//    logPlugin.debug(time);
+//
+//    Merchant.find({batchType: "batch"}).
+//        where('batchTime').lt(time).
+//        exec(callback);
 
 
 }
