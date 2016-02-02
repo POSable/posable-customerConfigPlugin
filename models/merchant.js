@@ -14,6 +14,7 @@ var MerchantSchema = new mongoose.Schema({
     mastercardID: String,
     amexID: String,
     discoverID: String,
+    cashID: String,
     depositAccountID: String,
     depositAccountName: String,
     batchTime: String,
