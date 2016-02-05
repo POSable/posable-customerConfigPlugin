@@ -20,38 +20,13 @@ function ConfigPlugin (env) {
         Merchant.findOne( {internalID: internalID}, '', callback );
     };
 
-
+    this.merchantBatchTrigger = function(callback) {
+        Merchant.find({batchType: "batch", batchTime: { $gte: 1229} }, {internalID: 1}, {}, callback);
+    };
 
     this.merchantBatchLookup = function(callback) {
         Merchant.find({batchType: "batch"}, {internalID: 1}, {}, callback);
     };
-
-//    function checkTime() {
-//
-//        var d = new Date();
-//        var hours = d.getHours();
-//        var mins = d.getMinutes();
-//        var time = "" + hours + mins;
-//
-//        logPlugin.debug(time);
-//
-//        if (time >= 1 && time <= 2359) {
-//            logPlugin.debug("in the range");
-//            lookup().merchantBatchLookup(function (err, docs) {
-//                batchMerchantsArray = docs;
-//                typeSum(batchMerchantsArray);
-//
-//    var d = new Date();
-//    var hours = d.getHours();
-//    var mins = d.getMinutes();
-//    var time = "" + hours + mins;
-//
-//    logPlugin.debug(time);
-//
-//    Merchant.find({batchType: "batch"}).
-//        where('batchTime').lt(time).
-//        exec(callback);
-
 
 }
 
