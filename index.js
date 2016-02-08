@@ -21,7 +21,7 @@ function ConfigPlugin (env) {
     };
 
     this.merchantBatchTrigger = function(callback) {
-        Merchant.find({batchType: "batch", batchTime: { $gte: 1229} }, {internalID: 1}, {}, callback);
+        Merchant.find({batchType: "batch", batchTime: { $gte: "1229" } }, {internalID: 1}, {}, callback);
     };
 
     this.merchantBatchLookup = function(callback) {
