@@ -18,6 +18,7 @@ var MerchantSchema = new mongoose.Schema({
     depositAccountID: String,
     depositAccountName: String,
     batchTime: String,
+    accountingClient: String,
     cloudElemAPIKey: String
 
 
