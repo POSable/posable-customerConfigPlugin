@@ -59,21 +59,17 @@ function merchantFind (internalID, external_CB) {
 
 function dbConnect (db_ENV) {
     var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function (callback) {
-        configLog.debug('configPlugin connected');
-    });
+    db.on('error', function(err) { configLog.error(err); });
+    db.once('open', function ()  { configLog.debug('configPlugin connected to database'); });
     mongoose.connect(db_ENV);
 }
 
 function redisConnect (redis_ENV) {
     if (redis_ENV) {
-        configLog.debug('Connecting to Redis...');
+        configLog.debug('Connecting to Redis');
         client = redis.createClient({url: redis_ENV});
-        client.on('error', function (err) {
-            if (err){ configLog.error(err);}
-            else { configLog.debug('Redis Connected')}
-        });
+        client.on('error', function (err) { configLog.error(err); });
+        client.once('connect', function() { configLog.debug('Redis connected'); });
     }
 }
 
