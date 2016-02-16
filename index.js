@@ -1,23 +1,35 @@
 var Merchant = require('./models/merchant').model;
 var mongoose = require('mongoose');
+var redis = require('redis');
 var configPlugin;
+var client;
+var configLog;
 
-function ConfigPlugin (env) {
+function ConfigPlugin (db_ENV, redis_ENV, logPlugin) {
 
-    //Setup Database Connection
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function (callback) {
-        //console.log('connected');
-    });
+    // Initializes plugin connections and logging object
+    setLogger(logPlugin);
+    redisConnect(redis_ENV);
+    dbConnect(db_ENV);
 
-    mongoose.connect(env);
 
-    this.merchantLookup = function(internalID, logPlugin, callback){
-        if(logPlugin) {
-            logPlugin.debug('Merchant Lookup Started');
+    this.merchantLookup = function(internalID, external_CB){
+        configLog.debug('Merchant lookup started');
+
+        if (redis_ENV) {
+            redisLookup(internalID, function(err, res){
+                if (err) {
+                    configLog.error(err);
+                    merchantFind(internalID, external_CB);
+                } else if (res === null) {
+                    merchantFind(internalID, external_CB);
+                } else {
+                    return external_CB(null, res);
+                }
+            });
+        } else {
+            merchantFind(internalID, external_CB);
         }
-        Merchant.findOne( {internalID: internalID}, '', callback );
     };
 
     this.merchantBatchTrigger = function(callback) {
@@ -30,8 +42,73 @@ function ConfigPlugin (env) {
 
 }
 
-function newConfigPlugin (env) {
-    if (!configPlugin) { configPlugin = new ConfigPlugin(env); }
+
+// Internal Helper Functions
+function merchantFind (internalID, external_CB) {
+    configLog.debug('Searching database for merchant with internalID: ' + internalID);
+    Merchant.findOne( {internalID: internalID}, '', function(err, merchant) {
+        if (err) {
+            configLog.error(err);
+            return external_CB(err, null);
+        } else {
+            redisUpdate(internalID, merchant);
+            return external_CB(null, merchant);
+        }
+    });
+}
+
+function dbConnect (db_ENV) {
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function (callback) {
+        configLog.debug('configPlugin connected');
+    });
+    mongoose.connect(db_ENV);
+}
+
+function redisConnect (redis_ENV) {
+    if (redis_ENV) {
+        configLog.debug('Connecting to Redis...');
+        client = redis.createClient({url: redis_ENV});
+        client.on('error', function (err) {
+            if (err){ configLog.error(err);}
+            else { configLog.debug('Redis Connected')}
+        });
+    }
+}
+
+function redisLookup (key, callback) {
+    configLog.debug('Searching Redis for key: ' + key);
+    client.get(key, function(err, res) {
+        if (err) {
+            configLog.error(err);
+            return callback(err, null);
+        } else {
+            configLog.debug('Key: ' + key + ' found in Redis cache');
+            return callback(null, res);
+        }
+    });
+}
+
+function redisUpdate (key, value){
+    client.set(key, value, redis.print);
+}
+
+
+// Assigns a default logger if no logger is passed into plugin
+function setLogger (logPlugin) {
+    var defaultLog = {
+        info: function(msg) { console.log(msg); },
+        debug: function(msg) { console.log(msg); },
+        error: function(msg) { console.log('Error: ' + msg); },
+        fatal: function(msg) { console.log('Fatal: ' + msg); } };
+
+    if (logPlugin) { configLog = logPlugin; }
+    else { configLog = defaultLog; }
+}
+
+function newConfigPlugin (db_ENV, redis_ENV, logPlugin) {
+    if (!configPlugin) { configPlugin = new ConfigPlugin(db_ENV, redis_ENV, logPlugin); }
     return configPlugin;
 }
 
