@@ -1,6 +1,7 @@
 var Merchant = require('./models/merchant').model;
 var mongoose = require('mongoose');
 var redis = require('redis');
+var redisMerchantKey = 'config_merchant_';
 var configPlugin;
 var client;
 var configLog;
@@ -17,12 +18,12 @@ function ConfigPlugin (db_ENV, redis_ENV, logPlugin) {
         configLog.debug('Merchant lookup started');
 
         if (redis_ENV) {
-            redisLookup(internalID, function(err, res){
+            redisLookup(redisMerchantKey + internalID, function(err, res){
                 if (err) {
                     configLog.error(err);
-                    merchantFind(internalID, external_CB);
+                    merchantFind_updateRedis(internalID, external_CB);
                 } else if (res === null) {
-                    merchantFind(internalID, external_CB);
+                    merchantFind_updateRedis(internalID, external_CB);
                 } else {
                     return external_CB(null, res);
                 }
@@ -51,10 +52,22 @@ function merchantFind (internalID, external_CB) {
             configLog.error(err);
             return external_CB(err, null);
         } else {
-            redisUpdate(internalID, merchant);
             return external_CB(null, merchant);
         }
     });
+}
+
+function merchantFind_updateRedis (internalID, external_CB) {
+    configLog.debug('Searching database for merchant with internalID: ' + internalID);
+    Merchant.findOne( {internalID: internalID}, '', function(err, merchant) {
+        if (err) {
+            configLog.error(err);
+            return external_CB(err, null);
+        } else {
+            redisUpdate(redisMerchantKey + internalID, merchant);
+            return external_CB(null, merchant);
+        }
+    })
 }
 
 function dbConnect (db_ENV) {
@@ -79,15 +92,27 @@ function redisLookup (key, callback) {
         if (err) {
             configLog.error(err);
             return callback(err, null);
+        } else if (res === null) {
+            configLog.debug('Key not found in Redis');
+            return callback(null, res);
         } else {
             configLog.debug('Key: ' + key + ' found in Redis cache');
-            return callback(null, res);
+            var parsedResponse;
+
+            try {
+                parsedResponse = JSON.parse(res); // <-- Formats res into usable JS object
+            } catch (err) {
+                configLog.error(err);
+                return callback(err, null);
+            }
+            return callback(null, parsedResponse);
         }
     });
 }
 
 function redisUpdate (key, value){
-    client.set(key, value, redis.print);
+    var stringifyValue = JSON.stringify(value);
+    client.set(key, stringifyValue, redis.print);
 }
 
 
@@ -96,8 +121,8 @@ function setLogger (logPlugin) {
     var defaultLog = {
         info: function(msg) { console.log(msg); },
         debug: function(msg) { console.log(msg); },
-        error: function(msg) { console.log('Error: ' + msg); },
-        fatal: function(msg) { console.log('Fatal: ' + msg); } };
+        error: function(msg) { console.log(msg); },
+        fatal: function(msg) { console.log(msg); } };
 
     if (logPlugin) { configLog = logPlugin; }
     else { configLog = defaultLog; }
