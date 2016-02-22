@@ -51,7 +51,6 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
 
 
 function findMerchant_updateRedis (internalID, external_CB) {
-    configLog.debug('Searching database for merchant with internalID: ' + internalID);
     dbClient.merchantFind(internalID, function (err, merchant) {
         if (err) {
             // Error connecting to database, exit with error

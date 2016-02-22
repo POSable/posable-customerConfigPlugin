@@ -1,4 +1,4 @@
-var ConfigPlugin = require('configPlugin').ConfigPlugin;
+var ConfigPlugin = require('./configPlugin').ConfigPlugin;
 var configPlugin;
 
 function setConfigPlugin (db_ENV, redis_ENV, logPlugin) {
