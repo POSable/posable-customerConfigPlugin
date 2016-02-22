@@ -1,6 +1,6 @@
 var redisMerchantKey = 'config_merchant_';
-var dbClient;
-var redisClient;
+var dbClient = require('./lib/dbClient');
+var redisClient = require('./lib/redisClient');
 var configPlugin;
 var configLog;
 
@@ -10,10 +10,10 @@ function ConfigPlugin (db_ENV, redis_ENV, logPlugin) {
     // Setup configLog and database/redis clients
     setLogger(logPlugin); // <-- Must run BEFORE database/redis clients to set configLog
 
-    dbClient = require('./lib/dbClient')(configLog);
+    dbClient.loggerSetup(configLog);
     dbClient.dbConnect(db_ENV);
 
-    redisClient = require('./lib/redisClient')(configLog);
+    redisClient.loggerSetup(configLog);
     redisClient.redisConnect(redis_ENV);
 
     // External functions
