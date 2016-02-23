@@ -49,14 +49,6 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
             }
         });
     };
-
-    this.merchantBatchTrigger = function(callback) {
-        Merchant.find({batchType: "batch", batchTime: { $gte: "1229" } }, {internalID: 1}, {}, callback);
-    };
-
-    this.merchantBatchLookup = function(callback) {
-        Merchant.find({batchType: "batch"}, {internalID: 1}, {}, callback);
-    };
 };
 
 
@@ -75,7 +67,6 @@ function findMerchant_updateRedis (internalID, external_CB) {
         }
     });
 }
-
 
 // Setup functions
 function setLogger (logPlugin) {
