@@ -1,6 +1,6 @@
 {
   "name": "posable-customer-config-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "jasmine": "^2.3.2",
-    "mongoose": "^4.3.1",
-    "redis": "^2.4.2"
+    "mongoose": "4.3.1",
+    "redis": "2.4.2"
   }
 }
