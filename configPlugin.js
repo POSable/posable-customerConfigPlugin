@@ -39,6 +39,17 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
         }
     };
 
+    this.merchantSave = function(newMerchantObj, external_CB) {
+        dbClient.merchantCreate(newMerchantObj, function (err, merchant) {
+            if (err) {
+                configLog.error(err);
+                return external_CB(err, null);
+            } else {
+                return external_CB(null, merchant);
+            }
+        });
+    };
+
     this.merchantBatchTrigger = function(callback) {
         Merchant.find({batchType: "batch", batchTime: { $gte: "1229" } }, {internalID: 1}, {}, callback);
     };
@@ -69,7 +80,7 @@ function findMerchant_updateRedis (internalID, external_CB) {
 // Setup functions
 function setLogger (logPlugin) {
     var defaultLog = {
-        info: function(msg) { console.log(msg); },
+         info: function(msg) { console.log(msg); },
         debug: function(msg) { console.log(msg); },
         error: function(msg) { console.log(msg); },
         fatal: function(msg) { console.log(msg); } };
