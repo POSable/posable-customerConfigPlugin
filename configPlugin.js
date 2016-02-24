@@ -1,6 +1,7 @@
 var redisMerchantKey = 'config_merchant_';
 var dbClient = require('./lib/dbClient');
 var redisClient = require('./lib/redisClient');
+var merchantLib;
 var configLog;
 
 
@@ -9,13 +10,13 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
     // Setup configLog and database/redis clients
     setLogger(logPlugin); // <-- Must run BEFORE database/redis clients to set configLog
 
+    merchantLib = require('./lib/merchantLib')(configLog);
     dbClient.loggerSetup(configLog);
     dbClient.dbConnect(db_ENV);
 
     redisClient.loggerSetup(configLog);
     redisClient.redisConnect(redis_ENV);
 
-    // External functions
     this.merchantLookup = function(internalID, external_CB){
         configLog.debug('Merchant lookup started');
 
@@ -35,26 +36,27 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
             });
         } else {
             // No redis client, search database without updating cache
-            dbClient.merchantFind(internalID, external_CB);
+            merchantLib.merchantFind(internalID, external_CB);
         }
     };
 
     this.merchantSave = function(newMerchantObj, external_CB) {
-        dbClient.merchantCreate(newMerchantObj, function (err, merchant) {
-            if (err) {
-                configLog.error(err);
-                return external_CB(err, null);
-            } else {
-                return external_CB(null, merchant);
-            }
-        });
+        merchantLib.merchantCreate(newMerchantObj, external_CB);
     };
+
+    //this.merchantUpdate = function(origMerchant, external_CB) {
+    //    merchantLib.merchantModify(origMerchant, external_CB);
+    //};
+    //
+    //this.merchantDelete = function(merchant, external_CB) {
+    //    merchantLib.merchantRemove(merchant, external_CB);
+    //};
 };
 
 
 
 function findMerchant_updateRedis (internalID, external_CB) {
-    dbClient.merchantFind(internalID, function (err, merchant) {
+    merchantLib.merchantFind(internalID, function (err, merchant) {
         if (err) {
             // Error connecting to database, exit with error
             configLog.error(err);
@@ -79,6 +81,7 @@ function setLogger (logPlugin) {
     if (logPlugin) { configLog = logPlugin; }
     else { configLog = defaultLog; }
 }
+
 
 function testingStub (testFunctions){
 }
