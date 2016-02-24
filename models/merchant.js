@@ -20,19 +20,8 @@ var MerchantSchema = new mongoose.Schema({
     batchTime: String,
     accountingClient: String,
     cloudElemAPIKey: String
-
-
 });
 
-MerchantSchema.pre('save', function(next) {
-    var doc = this;
-    counter.findByIdAndUpdate({_id: 'merchantCounter'}, {$inc: { seq: 1} }, function(error, counter)   {
-        if(error)
-            return next(error);
-        doc.internalID = counter.seq;
-        next();
-    });
-});
 
 module.exports = {
     model : mongoose.model('Merchant', MerchantSchema)

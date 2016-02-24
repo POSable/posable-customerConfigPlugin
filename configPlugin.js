@@ -1,3 +1,7 @@
+var merchantLib = require('./lib/merchantLib');
+var dbClient = require('./lib/dbClient');
+var redisClient = require('./lib/redisClient');
+
 var redisMerchantKey = 'config_merchant_';
 var configLog;
 
@@ -7,11 +11,13 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
     // Setup configLog and database/redis clients
     setLogger(logPlugin); // <-- Must run BEFORE database/redis clients to set configLog
 
-    var merchantLib = require('./lib/merchantLib')(configLog);
-    var dbClient = require('./lib/dbClient')(configLog);
-        dbClient.dbConnect(db_ENV);
-    var redisClient = require('./lib/redisClient')(configLog);
-        redisClient.redisConnect(redis_ENV);
+    merchantLib.loggerSetup(configLog);
+
+    dbClient.loggerSetup(configLog);
+    dbClient.dbConnect(db_ENV);
+
+    redisClient.loggerSetup(configLog);
+    redisClient.redisConnect(redis_ENV);
 
 
     this.merchantLookup = function(internalID, external_CB){
@@ -70,7 +76,7 @@ function findMerchant_updateRedis (internalID, external_CB) {
 // Setup functions
 function setLogger (logPlugin) {
     var defaultLog = {
-         info: function(msg) { console.log(msg); },
+        info: function(msg) { console.log(msg); },
         debug: function(msg) { console.log(msg); },
         error: function(msg) { console.log(msg); },
         fatal: function(msg) { console.log(msg); } };
