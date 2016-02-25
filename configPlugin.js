@@ -47,13 +47,13 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
         merchantLib.merchantCreate(newMerchantObj, external_CB);
     };
 
-    //this.merchantUpdate = function(origMerchant, external_CB) {
-    //    merchantLib.merchantModify(origMerchant, external_CB);
-    //};
-    //
-    //this.merchantDelete = function(merchant, external_CB) {
-    //    merchantLib.merchantRemove(merchant, external_CB);
-    //};
+    this.merchantUpdate = function(origMerchant, updateObj, external_CB) {
+        merchantLib.merchantModify(origMerchant, updateObj, external_CB);
+    };
+
+    this.merchantDelete = function(merchant, external_CB) {
+        merchantLib.merchantRemove(merchant, external_CB);
+    };
 };
 
 
