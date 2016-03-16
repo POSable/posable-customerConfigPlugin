@@ -25,7 +25,8 @@ var MerchantSchema = new mongoose.Schema({
     depositAccountName: String,
     batchTime: String,
     accountingClient: String,
-    cloudElemAPIKey: String
+    cloudElemAPIKey: String,
+    email: String
 });
 
 module.exports = {
