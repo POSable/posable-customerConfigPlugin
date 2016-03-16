@@ -91,4 +91,20 @@ describe('merchantLib', function(){
             expect(testMerchantModel.findOneAndRemove).toHaveBeenCalled();
         });
     });
+
+    describe('is able to find a merchant or create a merchant and return a JWT: ', function(){
+        beforeEach(function(){
+            testNewMerchObj = {name: 'testMerchant', internalID: 1, save: function(){}};
+            testMerchantLib.testStub(null, testMerchantModel, null, testLogger);
+
+            spyOn(testMerchantModel, 'findOne');
+            spyOn(testMerchantModel, 'findOneAndRemove');
+            spyOn(testMerchantModel, 'update');
+        });
+
+        it('finds existing merchants', function(){
+            testMerchantLib.merchantFindOrCreate(testNewMerchObj);
+            expect(testMerchantModel.findOne).toHaveBeenCalled();
+        });
+    });
 });

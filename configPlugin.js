@@ -54,9 +54,11 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
     this.merchantDelete = function(merchant, external_CB) {
         merchantLib.merchantRemove(merchant, external_CB);
     };
+
+    this.getToken = function(newMerchantObj, external_CB) {
+        merchantLib.merchantFindOrCreate(newMerchantObj, external_CB);
+    }
 };
-
-
 
 function findMerchant_updateRedis (internalID, external_CB) {
     merchantLib.merchantFind(internalID, function (err, merchant) {
