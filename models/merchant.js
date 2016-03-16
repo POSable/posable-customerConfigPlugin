@@ -1,13 +1,19 @@
 var mongoose = require('mongoose');
 
 var MerchantSchema = new mongoose.Schema({
-    name: String,
+    name: String, // unique check
+    contactInfo: Object,
+    posUsername: String, // unique check
+    posPassword: String, // unique check
     posapiToken: String,
-    activeStatus: Boolean,
+    storeNumber: String, // unique check
+    posSystem: String,
+    activeStatus: {type: Boolean, default: true},
     timezone: String,
-    posVendorID: Number,
+    posVendor: String,
+    posVendorID: {type: Number, default: 0},
     internalID: Number,
-    responseType: String,
+    responseType: {type: String, default: 'xml'},
     merchantID: String,
     batchType: String,
     visaID: String,
@@ -22,8 +28,6 @@ var MerchantSchema = new mongoose.Schema({
     cloudElemAPIKey: String
 });
 
-
 module.exports = {
     model : mongoose.model('Merchant', MerchantSchema)
 };
-
