@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+require('./invoiceConfig');
 
 var MerchantSchema = new mongoose.Schema({
     name: String, // unique check
@@ -14,19 +15,8 @@ var MerchantSchema = new mongoose.Schema({
     posVendorID: {type: Number, default: 0},
     internalID: Number,
     responseType: {type: String, default: 'xml'},
-    merchantID: String,
-    batchType: String,
-    visaID: String,
-    mastercardID: String,
-    amexID: String,
-    discoverID: String,
-    cashID: String,
-    depositAccountID: String,
-    depositAccountName: String,
-    batchTime: String,
-    accountingClient: String,
-    cloudElemAPIKey: String,
-    email: String
+    email: String,
+    invoiceConfig: [mongoose.model('InvoiceConfig').schema]
 });
 
 module.exports = {
