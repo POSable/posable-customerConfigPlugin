@@ -51,6 +51,7 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
             } else {
                 // Merchant found, extracting/returning invoiceConfig for merchant
                 var merchantInvoice = merchant.invoiceConfig;
+                merchantInvoice.internalID = internalID;
                 return external_CB(null, merchantInvoice);
             }
         });
