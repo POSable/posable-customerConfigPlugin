@@ -20,7 +20,7 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
     redisClient.redisConnect(redis_ENV);
 
 
-    this.merchantLookup = function(internalID, external_CB){
+    this.merchantLookup = function (internalID, external_CB) {
         configLog.debug('Merchant lookup started');
 
         if (redis_ENV) { // <-- Allows plugin to run without Redis
@@ -43,19 +43,33 @@ var ConfigPlugin = function (db_ENV, redis_ENV, logPlugin) {
         }
     };
 
-    this.merchantSave = function(newMerchantObj, external_CB) {
+    this.merchantInvoiceConfig = function (internalID, external_CB) {
+        this.merchantLookup(internalID, function(err, merchant){
+            if (err) {
+                configLog.error(err);
+                return external_CB(err, null);
+            } else {
+                // Merchant found, extracting/returning invoiceConfig for merchant
+                var merchantInvoice = merchant.invoiceConfig;
+                merchantInvoice.internalID = internalID;
+                return external_CB(null, merchantInvoice);
+            }
+        });
+    };
+
+    this.merchantSave = function (newMerchantObj, external_CB) {
         merchantLib.merchantCreate(newMerchantObj, external_CB);
     };
 
-    this.merchantUpdate = function(origMerchant, updateObj, external_CB) {
+    this.merchantUpdate = function (origMerchant, updateObj, external_CB) {
         merchantLib.merchantModify(origMerchant, updateObj, external_CB);
     };
 
-    this.merchantDelete = function(merchant, external_CB) {
+    this.merchantDelete = function (merchant, external_CB) {
         merchantLib.merchantRemove(merchant, external_CB);
     };
 
-    this.getToken = function(newMerchantObj, external_CB) {
+    this.getToken = function (newMerchantObj, external_CB) {
         merchantLib.merchantFindOrCreate(newMerchantObj, external_CB);
     }
 };
