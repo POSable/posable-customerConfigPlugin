@@ -19,6 +19,9 @@ var InvoiceConfigSchema = new mongoose.Schema({
     checkID: String,
     ebtID: String,
     fsaID: String,
+    cashAccountID: String,
+    creditAccountID: String,
+    checkAccountID: String,
     accountingCustomerID: String,
     accountingClient: String,
     cloudElemAPIKey: String
