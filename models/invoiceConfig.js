@@ -8,7 +8,8 @@ var InvoiceConfigSchema = new mongoose.Schema({
     giftLineItemID: String,
     discountLineItemID: String,
     batchType: String,
-    batchTime: String,
+    batchHour: String,
+    batchMin: String,
     visaID: String,
     mastercardID: String,
     amexID: String,
@@ -18,6 +19,7 @@ var InvoiceConfigSchema = new mongoose.Schema({
     checkID: String,
     ebtID: String,
     fsaID: String,
+    accountingCustomerID: String,
     accountingClient: String,
     cloudElemAPIKey: String
 });
