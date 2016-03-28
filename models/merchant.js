@@ -16,7 +16,8 @@ var MerchantSchema = new mongoose.Schema({
     internalID: Number,
     responseType: {type: String, default: 'xml'},
     email: String,
-    invoiceConfig: mongoose.model('InvoiceConfig').schema
+    invoiceConfig: mongoose.model('InvoiceConfig').schema,
+    accountingIsReady: {type: Boolean, default: false}
 });
 
 module.exports = {
